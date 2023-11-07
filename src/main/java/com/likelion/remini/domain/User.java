@@ -5,11 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Entity
@@ -18,6 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="user_id")
     private Long id;
 
     private String nickname;
@@ -28,23 +29,22 @@ public class User {
 
     private String state;
 
-    private Date expirationDate;
+    private LocalDateTime expirationDate;
 
+    @Enumerated(value = EnumType.STRING)
     private OAuthProvider oAuthProvider;
 
+    @OneToMany(mappedBy = "user")
+    private List<Remini> reminiList = new ArrayList<>();
+
     @Builder
-    public User(String email, String nickname, String profileImageURL,String state, Date expirationDate, OAuthProvider oAuthProvider) {
+    public User(String email, String nickname, String profileImageURL,String state, LocalDateTime expirationDate, OAuthProvider oAuthProvider, List<Remini> reminiList) {
         this.nickname = nickname;
         this.profileImageURL = profileImageURL;
         this.email = email;
         this.state = state;
         this.expirationDate = expirationDate;
         this.oAuthProvider = oAuthProvider;
+        this.reminiList = reminiList;
     }
-
-//    @Builder
-//    public User(String email, OAuthProvider oAuthProvider) {
-//        this.email = email;
-//        this.oAuthProvider = oAuthProvider;
-//    }
 }
