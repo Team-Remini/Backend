@@ -20,31 +20,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    private String nickname;
-//
-//    private String profileImage;
+    private String nickname;
+
+    private String profileImageURL;
 
     private String email;
 
-//    private String state;
-//
-//    private Date expirationDate;
+    private String state;
+
+    private Date expirationDate;
 
     private OAuthProvider oAuthProvider;
 
-//    @Builder
-//    public User(String email, String nickname, String profileImage,String state, Date expirationDate, OAuthProvider oAuthProvider) {
-//        this.nickname = nickname;
-//        this.profileImage = profileImage;
-//        this.email = email;
-//        this.state = state;
-//        this.expirationDate = expirationDate;
-//        this.oAuthProvider = oAuthProvider;
-//    }
-
     @Builder
-    public User(String email, OAuthProvider oAuthProvider) {
+    public User(String email, String nickname, String profileImageURL,String state, Date expirationDate, OAuthProvider oAuthProvider) {
+        this.nickname = nickname;
+        this.profileImageURL = profileImageURL;
         this.email = email;
+        this.state = state;
+        this.expirationDate = expirationDate;
         this.oAuthProvider = oAuthProvider;
     }
+
+//    @Builder
+//    public User(String email, OAuthProvider oAuthProvider) {
+//        this.email = email;
+//        this.oAuthProvider = oAuthProvider;
+//    }
 }

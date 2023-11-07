@@ -31,6 +31,8 @@ public class OAuthLoginService {
     private Long newUser(OAuthInfoResponse oAuthInfoResponse) {
         User user = User.builder()
                 .email(oAuthInfoResponse.getEmail())
+                .nickname(oAuthInfoResponse.getNickname())
+                .profileImageURL((oAuthInfoResponse.getProfileImageURL()))
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
                 .build();
 
