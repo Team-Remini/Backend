@@ -1,17 +1,15 @@
 package com.likelion.remini.controller;
 
 import com.likelion.remini.domain.User;
-import com.likelion.remini.dto.ReminiDetailResponse;
+import com.likelion.remini.dto.*;
 import com.likelion.remini.exception.ReminiNotFoundException;
 import com.likelion.remini.exception.UserNotFoundException;
-import com.likelion.remini.dto.LikeResponseDTO;
-import com.likelion.remini.dto.ReminiRequestDTO;
-import com.likelion.remini.dto.ReminiUpdateRequestDTO;
-import com.likelion.remini.dto.UserResponseDTO;
 import com.likelion.remini.service.ReminiService;
 import io.swagger.annotations.Api;
 import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,4 +98,108 @@ public class ReminiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/private")
+    public ResponseEntity<Page<ReminiPageResponse>> getPrivatePage(@RequestParam int pageNumber,
+                                                                   @RequestParam int pageSize) {
+        PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
+
+        Page<ReminiPageResponse> response;
+
+        try {
+            response = reminiService.getPageByUser(request, false);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/temporary")
+    public ResponseEntity<Page<ReminiPageResponse>> getTemporaryPage(@RequestParam int pageNumber,
+                                                                   @RequestParam int pageSize) {
+        PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
+
+        Page<ReminiPageResponse> response;
+
+        try {
+            response = reminiService.getPageByUser(request, true);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<Page<ReminiPageResponse>> getRecentPage(@RequestParam int pageNumber,
+                                                                   @RequestParam int pageSize) {
+        PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
+
+        Page<ReminiPageResponse> response;
+
+        try {
+            response = reminiService.getPage(request);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<Page<ReminiPageResponse>> getPopularPage(@RequestParam int pageNumber,
+                                                                   @RequestParam int pageSize) {
+        PageRequest request = getPageRequestByLikeCount(pageNumber, pageSize);
+
+        Page<ReminiPageResponse> response;
+
+        try {
+            response = reminiService.getPage(request);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<Page<ReminiPageResponse>> getPopularPage(@RequestParam int pageNumber,
+                                                                   @RequestParam int pageSize,
+                                                                   @RequestParam String category) {
+        PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
+
+        Page<ReminiPageResponse> response;
+
+        try {
+            response = reminiService.getPageByType(request, category);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private PageRequest getPageRequestByCreateDate(int pageNumber, int pageSize) {
+        return PageRequest.of(pageNumber, pageSize, Sort.by(
+                Sort.Order.desc("createdDate"),
+                Sort.Order.asc("title")
+        ));
+    }
+
+    private PageRequest getPageRequestByLikeCount(int pageNumber, int pageSize) {
+        return PageRequest.of(pageNumber, pageSize, Sort.by(
+                Sort.Order.desc("likeCount"),
+                Sort.Order.asc("title")
+        ));
+    }
 }

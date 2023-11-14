@@ -3,24 +3,25 @@ package com.likelion.remini.service;
 import com.likelion.remini.domain.Like;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
-import com.likelion.remini.dto.ReminiRequestDTO;
-import com.likelion.remini.dto.ReminiUpdateRequestDTO;
-import com.likelion.remini.dto.UserResponseDTO;
+import com.likelion.remini.dto.*;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.LikeRepository;
 import com.likelion.remini.domain.User;
-import com.likelion.remini.dto.ReminiDetailResponse;
 import com.likelion.remini.exception.ReminiNotFoundException;
 import com.likelion.remini.exception.UserNotFoundException;
 import com.likelion.remini.repository.ReminiRepository;
 import com.likelion.remini.repository.UserRepository;
 import com.likelion.remini.repository.SectionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -166,9 +167,7 @@ public class ReminiService {
 
     public ReminiDetailResponse getDetail(Long reminiId) {
 
-        Long userId = authTokensGenerator.extractMemberId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("해당 userid로 찾을 수 없습니다 : " + userId));
+        User user = getUser();
 
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(() -> new ReminiNotFoundException("회고를 찾을 수 없음"));
@@ -178,5 +177,48 @@ public class ReminiService {
         return ReminiDetailResponse.create(remini, user, isLiked);
     }
 
+    public Page<ReminiPageResponse> getPageByUser(PageRequest request, Boolean instantSave) {
+
+        User user = getUser();
+
+        Page<Remini> reminiPage = reminiRepository.findAllByUserAndInstantSave(request, user, instantSave);
+        return new PageImpl<>(
+                reminiPage.stream()
+                        .map(ReminiPageResponse::of)
+                        .collect(Collectors.toList()),
+                request,
+                reminiPage.getTotalElements()
+        );
+    }
+
+    public Page<ReminiPageResponse> getPage(PageRequest request) {
+
+        Page<Remini> reminiPage = reminiRepository.findAllByInstantSave(request, false);
+        return new PageImpl<>(
+                reminiPage.stream()
+                        .map(ReminiPageResponse::of)
+                        .collect(Collectors.toList()),
+                request,
+                reminiPage.getTotalElements()
+        );
+    }
+
+    public Page<ReminiPageResponse> getPageByType(PageRequest request, String type) {
+
+        Page<Remini> reminiPage = reminiRepository.findAllByTypeAndInstantSave(request, type, false);
+        return new PageImpl<>(
+                reminiPage.stream()
+                        .map(ReminiPageResponse::of)
+                        .collect(Collectors.toList()),
+                request,
+                reminiPage.getTotalElements()
+        );
+    }
+
+    private User getUser() {
+        Long userId = authTokensGenerator.extractMemberId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 userid로 찾을 수 없습니다 : " + userId));
+    }
 
 }
