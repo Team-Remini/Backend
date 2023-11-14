@@ -173,9 +173,9 @@ public class ReminiService {
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(() -> new ReminiNotFoundException("회고를 찾을 수 없음"));
 
-        Like like = likeRepository.findByUserAndRemini(user, remini);
+        boolean isLiked = likeRepository.findByUserAndRemini(user, remini).isPresent();
 
-        return ReminiDetailResponse.create(remini, user, like != null);
+        return ReminiDetailResponse.create(remini, user, isLiked);
     }
 
 
