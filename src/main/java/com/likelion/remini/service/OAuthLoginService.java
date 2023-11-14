@@ -34,6 +34,7 @@ public class OAuthLoginService {
                 .nickname(oAuthInfoResponse.getNickname())
                 .profileImageURL((oAuthInfoResponse.getProfileImageURL()))
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
+                .state("standard")
                 .build();
 
         return userRepository.save(user).getId();

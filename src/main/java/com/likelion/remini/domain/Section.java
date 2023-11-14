@@ -3,10 +3,12 @@ package com.likelion.remini.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Section {
@@ -20,6 +22,7 @@ public class Section {
     private Remini remini;
 
     private String text;
+
 
     @Builder
     public Section(Remini remini, String text){
