@@ -3,6 +3,7 @@ package com.likelion.remini.dto;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
 import com.likelion.remini.domain.User;
+import com.likelion.remini.util.PresignedUrl;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,7 @@ public class ReminiDetailResponse {
     private final LocalDateTime createdDate;
 
     public static ReminiDetailResponse create(Remini remini, User requestor, boolean isLiked) {
-        String reminiImage = null;
-//        TODO - reminiImage = getReminiImage(remini.getReminiImageUrl());
+        String reminiImage = PresignedUrl.getPresignedUrl(remini.getReminiImageUrl());
 
         User owner = remini.getUser();
 

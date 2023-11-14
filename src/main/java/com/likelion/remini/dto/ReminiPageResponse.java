@@ -1,6 +1,7 @@
 package com.likelion.remini.dto;
 
 import com.likelion.remini.domain.Remini;
+import com.likelion.remini.util.PresignedUrl;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class ReminiPageResponse {
 
     private final LocalDateTime createdDate;
 
-    public ReminiPageResponse(String title, String reminiImage, long likesCount, LocalDateTime createdDate) {
+    private ReminiPageResponse(String title, String reminiImage, long likesCount, LocalDateTime createdDate) {
         this.title = title;
         this.reminiImage = reminiImage;
         this.likesCount = likesCount;
@@ -27,7 +28,9 @@ public class ReminiPageResponse {
     }
 
     public static ReminiPageResponse of(Remini remini) {
-        return new ReminiPageResponse(remini.getTitle(), remini.getReminiImageUrl(), remini.getLikesCount(),
+        String reminiImage = PresignedUrl.getPresignedUrl(remini.getReminiImageUrl());
+
+        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(),
                 remini.getCreatedDate());
     }
 }
