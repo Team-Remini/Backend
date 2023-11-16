@@ -109,7 +109,7 @@ public class ReminiController {
         Page<ReminiPageResponse> response;
 
         try {
-            response = reminiService.getPageByUser(request, false);
+            response = reminiService.getPrivatePage(request);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class ReminiController {
         Page<ReminiPageResponse> response;
 
         try {
-            response = reminiService.getPageByUser(request, true);
+            response = reminiService.getTemporaryPage(request);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

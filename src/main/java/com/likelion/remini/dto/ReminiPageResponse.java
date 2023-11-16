@@ -16,18 +16,28 @@ public class ReminiPageResponse {
 
     private final long likesCount;
 
+    private final boolean isLiked;
+
     private final LocalDateTime createdDate;
 
-    private ReminiPageResponse(String title, String reminiImage, long likesCount, LocalDateTime createdDate) {
+    private ReminiPageResponse(String title, String reminiImage, long likesCount, boolean isLiked,
+                               LocalDateTime createdDate) {
         this.title = title;
         this.reminiImage = reminiImage;
         this.likesCount = likesCount;
+        this.isLiked = isLiked;
         this.createdDate = createdDate;
     }
 
     public static ReminiPageResponse of(Remini remini, String reminiImage) {
 
-        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(),
+        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(), false,
+                remini.getCreatedDate());
+    }
+
+    public static ReminiPageResponse of(Remini remini, String reminiImage, boolean isLiked) {
+
+        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(), isLiked,
                 remini.getCreatedDate());
     }
 }

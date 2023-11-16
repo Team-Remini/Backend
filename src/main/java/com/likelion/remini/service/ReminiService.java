@@ -179,6 +179,12 @@ public class ReminiService {
 
     /* 회고 조회 */
 
+    /**
+     * 주어진 ID를 가진 회고의 상세 정보를 조회하는 메서드이다.
+     *
+     * @param reminiId 회고 ID
+     * @return 회고 상세 정보
+     */
     public ReminiDetailResponse getDetail(Long reminiId) {
 
         User user = getUser();
@@ -193,11 +199,18 @@ public class ReminiService {
         return ReminiDetailResponse.create(remini, user, reminiImage, isLiked);
     }
 
-    public Page<ReminiPageResponse> getPageByUser(PageRequest request, Boolean instantSave) {
+    /**
+     * 요청자가 임시저장한 회고 목록을 조회하는 메서드이다.
+     *
+     * @param request 페이지 요청 정보
+     * @return 페이지 형태의 임시저장 회고 목록
+     */
+    public Page<ReminiPageResponse> getTemporaryPage(PageRequest request) {
 
         User user = getUser();
 
-        Page<Remini> reminiPage = reminiRepository.findAllByUserAndInstantSave(request, user, instantSave);
+        Page<Remini> reminiPage = reminiRepository.findAllByUserAndInstantSave(request, user, true);
+
         return new PageImpl<>(
                 reminiPage.stream()
                         .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl())))
@@ -207,24 +220,73 @@ public class ReminiService {
         );
     }
 
+    /**
+     * 요청자가 작성 완료한 회고 목록을 조회하는 메서드이다.
+     *
+     * @param request 페이지 요청 정보
+     * @return 페이지 형태의 작성 완료된 회고 목록
+     */
+    public Page<ReminiPageResponse> getPrivatePage(PageRequest request) {
+
+        User user = getUser();
+
+        Page<Remini> reminiPage = reminiRepository.findAllByUserAndInstantSave(request, user, false);
+
+        List<Long> likedList = likeRepository.findReminiIdList(user, reminiPage.getContent());
+
+        return new PageImpl<>(
+                reminiPage.stream()
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                                likedList.contains(v.getReminiId())))
+                        .collect(Collectors.toList()),
+                request,
+                reminiPage.getTotalElements()
+        );
+    }
+
+    /**
+     * 지정된 페이지 요청에 따른 회고 목록을 조회하는 메서드이다.
+     *
+     * @param request 페이지 요청 정보
+     * @return 페이지 형태의 회고 목록
+     */
     public Page<ReminiPageResponse> getPage(PageRequest request) {
 
+        User user = getUser();
+
         Page<Remini> reminiPage = reminiRepository.findAllByInstantSave(request, false);
+
+        List<Long> likedList = likeRepository.findReminiIdList(user, reminiPage.getContent());
+
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl())))
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                                likedList.contains(v.getReminiId())))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
         );
     }
 
+    /**
+     * 주어진 카테고리에 맞는 회고 목록을 조회하는 메서드이다.
+     *
+     * @param request 페이지 요청 정보
+     * @param type 회고 카테고리
+     * @return 페이지 형태의 동일 카테고리 회고 목록
+     */
     public Page<ReminiPageResponse> getPageByType(PageRequest request, String type) {
 
+        User user = getUser();
+
         Page<Remini> reminiPage = reminiRepository.findAllByTypeAndInstantSave(request, type, false);
+
+        List<Long> likedList = likeRepository.findReminiIdList(user, reminiPage.getContent());
+
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl())))
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                                likedList.contains(v.getReminiId())))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
