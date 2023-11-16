@@ -174,7 +174,7 @@ public class ReminiController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<Page<ReminiPageResponse>> getPopularPage(@RequestParam int pageNumber,
+    public ResponseEntity<Page<ReminiPageResponse>> getCategoryPage(@RequestParam int pageNumber,
                                                                    @RequestParam int pageSize,
                                                                    @RequestParam String category) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
@@ -201,7 +201,7 @@ public class ReminiController {
 
     private PageRequest getPageRequestByLikeCount(int pageNumber, int pageSize) {
         return PageRequest.of(pageNumber, pageSize, Sort.by(
-                Sort.Order.desc("likeCount"),
+                Sort.Order.desc("likesCount"),
                 Sort.Order.asc("title")
         ));
     }
