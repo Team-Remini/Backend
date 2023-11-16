@@ -88,7 +88,7 @@ public class ReminiController {
     /* 회고 조회 */
     @GetMapping("{reminiId}")
     public ResponseEntity<ReminiDetailResponse> getDetail(@PathVariable Long reminiId) {
-        ReminiDetailResponse response = null;
+        ReminiDetailResponse response;
 
         try {
             response = reminiService.getDetail(reminiId);
@@ -102,8 +102,8 @@ public class ReminiController {
     }
 
     @GetMapping("/private")
-    public ResponseEntity<Page<ReminiPageResponse>> getPrivatePage(@RequestParam int pageNumber,
-                                                                   @RequestParam int pageSize) {
+    public ResponseEntity<Page<ReminiPageResponse>> getPrivatePage(@RequestParam(defaultValue = "0") int pageNumber,
+                                                                   @RequestParam(defaultValue = "12") int pageSize) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response;
@@ -120,8 +120,8 @@ public class ReminiController {
     }
 
     @GetMapping("/temporary")
-    public ResponseEntity<Page<ReminiPageResponse>> getTemporaryPage(@RequestParam int pageNumber,
-                                                                   @RequestParam int pageSize) {
+    public ResponseEntity<Page<ReminiPageResponse>> getTemporaryPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                                                   @RequestParam(defaultValue = "12") int pageSize) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response;
@@ -138,8 +138,8 @@ public class ReminiController {
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<Page<ReminiPageResponse>> getRecentPage(@RequestParam int pageNumber,
-                                                                   @RequestParam int pageSize) {
+    public ResponseEntity<Page<ReminiPageResponse>> getRecentPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                                                   @RequestParam(defaultValue = "12") int pageSize) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response;
@@ -156,8 +156,8 @@ public class ReminiController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<Page<ReminiPageResponse>> getPopularPage(@RequestParam int pageNumber,
-                                                                   @RequestParam int pageSize) {
+    public ResponseEntity<Page<ReminiPageResponse>> getPopularPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                                                   @RequestParam(defaultValue = "12") int pageSize) {
         PageRequest request = getPageRequestByLikeCount(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response;
@@ -174,9 +174,9 @@ public class ReminiController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<Page<ReminiPageResponse>> getCategoryPage(@RequestParam int pageNumber,
-                                                                   @RequestParam int pageSize,
-                                                                   @RequestParam String category) {
+    public ResponseEntity<Page<ReminiPageResponse>> getCategoryPage(@RequestParam(defaultValue = "0") int pageNumber,
+                                                                   @RequestParam(defaultValue = "12") int pageSize,
+                                                                   @RequestParam(defaultValue = "kpt") String category) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response;
