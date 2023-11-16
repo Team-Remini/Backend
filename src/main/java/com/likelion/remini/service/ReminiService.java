@@ -1,5 +1,6 @@
 package com.likelion.remini.service;
 
+import com.amazonaws.HttpMethod;
 import com.likelion.remini.domain.Like;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
@@ -33,7 +34,7 @@ public class ReminiService {
     private final SectionRepository sectionRepository;
     private final LikeRepository likeRepository;
     private final AuthTokensGenerator authTokensGenerator;
-
+    private final PresignedUrlService presignedUrlService;
 
     /* 회고 관리 */
     //회고 등록 api
@@ -172,9 +173,11 @@ public class ReminiService {
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(() -> new ReminiNotFoundException("회고를 찾을 수 없음"));
 
+        String reminiImage = presignedUrlService.getPresignedUrl(remini.getReminiImageUrl(), HttpMethod.GET);
+
         boolean isLiked = likeRepository.findByUserAndRemini(user, remini).isPresent();
 
-        return ReminiDetailResponse.create(remini, user, isLiked);
+        return ReminiDetailResponse.create(remini, user, reminiImage, isLiked);
     }
 
     public Page<ReminiPageResponse> getPageByUser(PageRequest request, Boolean instantSave) {
@@ -184,7 +187,8 @@ public class ReminiService {
         Page<Remini> reminiPage = reminiRepository.findAllByUserAndInstantSave(request, user, instantSave);
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(ReminiPageResponse::of)
+                        .map(v -> ReminiPageResponse.of(v,
+                                presignedUrlService.getPresignedUrl(v.getReminiImageUrl(), HttpMethod.GET)))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
@@ -196,7 +200,8 @@ public class ReminiService {
         Page<Remini> reminiPage = reminiRepository.findAllByInstantSave(request, false);
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(ReminiPageResponse::of)
+                        .map(v -> ReminiPageResponse.of(v,
+                                presignedUrlService.getPresignedUrl(v.getReminiImageUrl(), HttpMethod.GET)))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
@@ -208,7 +213,8 @@ public class ReminiService {
         Page<Remini> reminiPage = reminiRepository.findAllByTypeAndInstantSave(request, type, false);
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(ReminiPageResponse::of)
+                        .map(v -> ReminiPageResponse.of(v,
+                                presignedUrlService.getPresignedUrl(v.getReminiImageUrl(), HttpMethod.GET)))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
