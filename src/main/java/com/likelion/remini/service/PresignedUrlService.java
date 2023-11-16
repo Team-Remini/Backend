@@ -4,7 +4,9 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
-import com.likelion.remini.exception.PresignedUrlException;
+import com.likelion.remini.exception.GlobalErrorResult;
+import com.likelion.remini.exception.ReminiErrorResult;
+import com.likelion.remini.exception.ReminiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class PresignedUrlService {
 
             return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
         } catch (Exception e) {
-            throw new PresignedUrlException("Presigned URL 생성 에러");
+            throw new ReminiException(GlobalErrorResult.PRESIGNED_URL_FAILED);
         }
     }
 
@@ -45,7 +47,7 @@ public class PresignedUrlService {
 
             return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
         } catch (Exception e) {
-            throw new PresignedUrlException("Presigned URL 생성 에러");
+            throw new ReminiException(GlobalErrorResult.PRESIGNED_URL_FAILED);
         }
     }
 

@@ -4,12 +4,10 @@ import com.likelion.remini.domain.Like;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
 import com.likelion.remini.dto.*;
-import com.likelion.remini.exception.NotOwnerException;
+import com.likelion.remini.exception.*;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.LikeRepository;
 import com.likelion.remini.domain.User;
-import com.likelion.remini.exception.ReminiNotFoundException;
-import com.likelion.remini.exception.UserNotFoundException;
 import com.likelion.remini.repository.ReminiRepository;
 import com.likelion.remini.repository.UserRepository;
 import com.likelion.remini.repository.SectionRepository;
@@ -167,11 +165,12 @@ public class ReminiService {
     public String getUploadUrl(Long reminiId) {
 
         User user = getUser();
-        Remini remini = reminiRepository.findById(reminiId).orElseThrow(ReminiNotFoundException::new);
+        Remini remini = reminiRepository.findById(reminiId)
+                .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
         // 회고 작성자가 아닌 경우, 이미지 등록 및 수정 불가
         if (!user.equals(remini.getUser())) {
-            throw new NotOwnerException();
+            throw new ReminiException(ReminiErrorResult.NON_OWNER);
         }
 
         return presignedUrlService.getPresignedUploadUrl(remini.getReminiImageUrl());
@@ -190,7 +189,7 @@ public class ReminiService {
         User user = getUser();
 
         Remini remini = reminiRepository.findById(reminiId)
-                .orElseThrow(() -> new ReminiNotFoundException("회고를 찾을 수 없음"));
+                .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
         String reminiImage = presignedUrlService.getPresignedUrl(remini.getReminiImageUrl());
 
@@ -296,7 +295,7 @@ public class ReminiService {
     private User getUser() {
         Long userId = authTokensGenerator.extractMemberId();
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("해당 userid로 찾을 수 없습니다 : " + userId));
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
 }
