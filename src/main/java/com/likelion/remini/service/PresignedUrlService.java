@@ -3,6 +3,7 @@ package com.likelion.remini.service;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.likelion.remini.exception.PresignedUrlException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,30 @@ public class PresignedUrlService {
 
     private final AmazonS3Client amazonS3Client;
 
-    public String getPresignedUrl(String filename, HttpMethod method) {
+    public String getPresignedUrl(String filename) {
         try {
             GeneratePresignedUrlRequest generatePresignedUrlRequest =
                     new GeneratePresignedUrlRequest(S3_BUCKET, filename)
-                            .withMethod(method)
+                            .withMethod(HttpMethod.GET)
+                            .withExpiration(getExpiration());
+
+            ResponseHeaderOverrides responseHeaderOverrides = new ResponseHeaderOverrides();
+            responseHeaderOverrides.setContentDisposition("inline");
+            responseHeaderOverrides.setContentType("image/jpeg");
+
+            generatePresignedUrlRequest.setResponseHeaders(responseHeaderOverrides);
+
+            return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
+        } catch (Exception e) {
+            throw new PresignedUrlException("Presigned URL 생성 에러");
+        }
+    }
+
+    public String getPresignedUploadUrl(String filename) {
+        try {
+            GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                    new GeneratePresignedUrlRequest(S3_BUCKET, filename)
+                            .withMethod(HttpMethod.PUT)
                             .withExpiration(getExpiration());
 
             return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();

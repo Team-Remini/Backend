@@ -1,12 +1,10 @@
 package com.likelion.remini.controller;
 
-import com.likelion.remini.domain.User;
 import com.likelion.remini.dto.*;
 import com.likelion.remini.exception.ReminiNotFoundException;
 import com.likelion.remini.exception.UserNotFoundException;
 import com.likelion.remini.service.ReminiService;
 import io.swagger.annotations.Api;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/remini")
@@ -80,7 +77,13 @@ public class ReminiController {
         return ResponseEntity.noContent().build();
     }
 
+    // 사진 업로드 URL api
+    @GetMapping("/{reminiId}/image")
+    public ResponseEntity<String> getUploadUrl(@PathVariable Long reminiId) {
+        String uploadUrl = reminiService.getUploadUrl(reminiId);
 
+        return new ResponseEntity<>(uploadUrl, HttpStatus.OK);
+    }
 
     /* 회고 조회 */
     @GetMapping("{reminiId}")
