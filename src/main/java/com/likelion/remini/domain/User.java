@@ -47,4 +47,18 @@ public class User {
         this.oAuthProvider = oAuthProvider;
         this.reminiList = reminiList;
     }
+
+    //구독 모델 변경을 위한 메서드
+    public void standardToPremium(){
+        this.state = "premium";
+    }
+    public void premiumToStandard(){
+        this.state = "standard";
+    }
+    public void initializeExpirationDate(){
+        this.expirationDate = null;
+    }
+    public void setExpirationDate(){
+        this.expirationDate = LocalDateTime.now().plusMonths(1L);
+    }
 }
