@@ -31,6 +31,8 @@ public class User {
 
     private LocalDateTime expirationDate;
 
+    private LocalDateTime alarmTime;
+
     @Enumerated(value = EnumType.STRING)
     private OAuthProvider oAuthProvider;
 
@@ -38,12 +40,13 @@ public class User {
     private List<Remini> reminiList = new ArrayList<>();
 
     @Builder
-    public User(String email, String nickname, String profileImageURL,String state, LocalDateTime expirationDate, OAuthProvider oAuthProvider, List<Remini> reminiList) {
+    public User(String email, String nickname, String profileImageURL,String state, LocalDateTime expirationDate,LocalDateTime alarmTime, OAuthProvider oAuthProvider, List<Remini> reminiList) {
         this.nickname = nickname;
         this.profileImageURL = profileImageURL;
         this.email = email;
         this.state = state;
         this.expirationDate = expirationDate;
+        this.alarmTime = alarmTime;
         this.oAuthProvider = oAuthProvider;
         this.reminiList = reminiList;
     }
@@ -60,5 +63,13 @@ public class User {
     }
     public void setExpirationDate(){
         this.expirationDate = LocalDateTime.now().plusMonths(1L);
+    }
+
+    //알람 시간 설정,전송을 위한 메서드
+    public void setAlarmTime(LocalDateTime alarmTime) {
+        this.alarmTime = alarmTime;
+    }
+    public LocalDateTime getAlarmTime() {
+        return alarmTime;
     }
 }

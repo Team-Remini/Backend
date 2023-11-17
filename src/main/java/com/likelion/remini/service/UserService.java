@@ -3,13 +3,17 @@ package com.likelion.remini.service;
 import com.likelion.remini.domain.User;
 import com.likelion.remini.dto.UserResponseDTO;
 import com.likelion.remini.jwt.AuthTokensGenerator;
-import com.likelion.remini.repository.LikeRepository;
-import com.likelion.remini.repository.ReminiRepository;
-import com.likelion.remini.repository.SectionRepository;
+import org.springframework.mail.javamail.JavaMailSender;
 import com.likelion.remini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final AuthTokensGenerator authTokensGenerator;
+
     /* 회원 관리 */
     //사용자 정보 조회 api
     @Transactional
