@@ -38,9 +38,7 @@ public class ReminiService {
     //회고 등록 api
     @Transactional
     public Long createRemini(ReminiRequestDTO reminiRequestDTO) {
-        Long userId = authTokensGenerator.extractMemberId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+        User user = getUser();
         List<String> sectionTexts = reminiRequestDTO.getSectionTexts();
         List<Section> sections = new ArrayList<>();
 
@@ -76,9 +74,7 @@ public class ReminiService {
     //회고 수정 api
     @Transactional
     public Long updateRemini(Long reminiId, ReminiUpdateRequestDTO reminiUpdateRequestDTO){
-        Long userId = authTokensGenerator.extractMemberId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+        User user = getUser();
         Remini reminiToUpdate = reminiRepository.findById(reminiId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
         //사용자 소유한 회고인지 확인, 필요없을 시 삭제해도 ㄱㅊ
@@ -107,11 +103,10 @@ public class ReminiService {
     //좋아요 생성 api
     @Transactional
     public Long createLike(Long reminiId){
-        Long userId = authTokensGenerator.extractMemberId();
+        User user = getUser();
         Remini reminiToLike = reminiRepository.findById(reminiId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+
         //좋아요를 누르지 않았다면
         if(!hasLiked(reminiId)){
             //like 객체 생성
@@ -133,23 +128,21 @@ public class ReminiService {
     }
     //좋아요 여부 api
     public boolean hasLiked(Long reminiId){
-        Long userId = authTokensGenerator.extractMemberId();
+        User user = getUser();
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+
         return likeRepository.existsByUserAndRemini(user,remini);
     }
     //좋아요 취소 api (추가로 구현한 부분 지워도 무방)
     @Transactional
     public Long unlike(Long reminiId){
-        Long userId = authTokensGenerator.extractMemberId();
+        User user = getUser();
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+
         Like like = likeRepository.findByUserAndRemini(user,remini)
-                .orElseThrow(() -> new IllegalArgumentException("해당 userid, reminiid로 찾을 수 없습니다 : " + userId+ "," + reminiId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 userid, reminiid로 찾을 수 없습니다 : " + user.getId()+ "," + reminiId));
         if(like != null){
             likeRepository.delete(like);
 
