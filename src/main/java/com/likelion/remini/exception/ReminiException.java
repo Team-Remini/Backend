@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ReminiException extends RuntimeException {
+public class ReminiException extends RuntimeException implements CustomException {
 
     private final ErrorResult errorResult;
 }

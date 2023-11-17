@@ -47,10 +47,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorList.toString()));
     }
 
-    @ExceptionHandler({ReminiException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final ReminiException exception) {
-        log.warn("Remini Exception occur: ", exception);
-        return this.makeErrorResponseEntity(exception.getErrorResult());
+    @ExceptionHandler({
+            ReminiException.class,
+            UserException.class
+    })
+    public ResponseEntity<ErrorResponse> handleRestApiException(final CustomException exception) {
+        ErrorResult errorResult = exception.getErrorResult();
+
+        log.warn(errorResult.name() + " Exception occurred: ", exception);
+        return this.makeErrorResponseEntity(errorResult);
     }
 
     @ExceptionHandler({Exception.class})

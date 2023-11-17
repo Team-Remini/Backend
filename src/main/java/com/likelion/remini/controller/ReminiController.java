@@ -1,7 +1,6 @@
 package com.likelion.remini.controller;
 
 import com.likelion.remini.dto.*;
-import com.likelion.remini.exception.UserNotFoundException;
 import com.likelion.remini.service.ReminiService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
