@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
 import com.likelion.remini.domain.User;
-import com.likelion.remini.service.PresignedUrlService;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +40,7 @@ public class ReminiDetailResponse {
             "        \"시간 분배가 어려웠어요\",\n" +
             "        \"시간 분배를 더욱 잘 해 더 좋은 성과를 내고 싶어요\"\n" +
             "]")
-    private final List<String> section = new ArrayList<>();
+    private final List<String> sectionTexts = new ArrayList<>();
 
     @ApiModelProperty(value = "- 0인 경우 회고 유형 가이드라인\n" +
             "- 1 이상인 경우, Step-by-Step 회고에서 마지막으로 수정한 Step 번호", example = "2")
@@ -72,7 +69,7 @@ public class ReminiDetailResponse {
                 .nickname(owner.getNickname())
                 .reminiImage(reminiImage)
                 .instantSave(remini.getInstantSave())
-                .section(remini.getSectionList().stream()
+                .sectionTexts(remini.getSectionList().stream()
                         .map(Section::getText)
                         .collect(Collectors.toList()))
                 .step(remini.getStep())
