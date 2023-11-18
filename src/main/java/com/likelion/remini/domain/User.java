@@ -27,6 +27,7 @@ public class User {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private State state;
 
     private LocalDateTime expirationDate;
