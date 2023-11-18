@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Builder
 public class ReminiDetailResponse {
 
-    @ApiModelProperty(value = "회고 카테고리", example = "kpt")
+    @ApiModelProperty(value = "회고 카테고리", example = "KPT")
     private final Type type;
 
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")

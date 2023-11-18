@@ -17,7 +17,7 @@ public class UserResponseDTO {
     @ApiModelProperty(value = "구독모델", example = "standard")
     private String state;
 
-    @ApiModelProperty(value = "프로필 사진 URL", example = "https://remini-bucket.s3.ap-northeast-2.amazonaws.com/profile-sample.jpg")
+    @ApiModelProperty(value = "프로필 사진 URL", example = "http://k.kakaocdn.net/dn/1G9kp/btsAot8liOn/8CWudi3uy07rvFNUkk3ER0/img_640x640.jpg")
     private String profileImageUrl;
 
     @ApiModelProperty(value = "구독만료일", example = "2023-11-31T23:59:59.123456")
