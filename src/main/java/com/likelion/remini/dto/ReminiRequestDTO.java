@@ -2,11 +2,14 @@ package com.likelion.remini.dto;
 
 import com.likelion.remini.domain.Type;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReminiRequestDTO {
 
     @ApiModelProperty(value = "회고 카테고리", example = "KPT")
