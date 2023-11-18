@@ -1,13 +1,10 @@
 package com.likelion.remini.service;
 
-import com.likelion.remini.domain.Like;
-import com.likelion.remini.domain.Remini;
-import com.likelion.remini.domain.Section;
+import com.likelion.remini.domain.*;
 import com.likelion.remini.dto.*;
 import com.likelion.remini.exception.*;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.LikeRepository;
-import com.likelion.remini.domain.User;
 import com.likelion.remini.repository.ReminiRepository;
 import com.likelion.remini.repository.UserRepository;
 import com.likelion.remini.repository.SectionRepository;
@@ -277,7 +274,7 @@ public class ReminiService {
      * @param type 회고 카테고리
      * @return 페이지 형태의 동일 카테고리 회고 목록
      */
-    public Page<ReminiPageResponse> getPageByType(PageRequest request, String type) {
+    public Page<ReminiPageResponse> getPageByType(PageRequest request, Type type) {
 
         User user = getUser();
 

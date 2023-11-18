@@ -1,5 +1,6 @@
 package com.likelion.remini.controller;
 
+import com.likelion.remini.domain.Type;
 import com.likelion.remini.dto.*;
 import com.likelion.remini.service.ReminiService;
 import io.swagger.annotations.*;
@@ -229,7 +230,7 @@ public class ReminiController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNumber", value="조회할 페이지 (0부터 시작)", example = "0", paramType = "query", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value="한 페이지에 조회할 개수", example = "12", paramType = "query", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "category", value="조회할 회고 카테고리", example = "kpt", paramType = "query", dataTypeClass = String.class)
+            @ApiImplicitParam(name = "category", value="조회할 회고 카테고리", example = "KPT", paramType = "query", dataTypeClass = Type.class)
     })
     @ApiResponses({
             @ApiResponse(code = 200, message = "게시글 조회 성공"),
@@ -239,7 +240,7 @@ public class ReminiController {
     })
     public ResponseEntity<Page<ReminiPageResponse>> getCategoryPage(@RequestParam(defaultValue = "0") int pageNumber,
                                                                    @RequestParam(defaultValue = "12") int pageSize,
-                                                                   @RequestParam(defaultValue = "kpt") String category) {
+                                                                   @RequestParam(defaultValue = "KPT") Type category) {
         PageRequest request = getPageRequestByCreateDate(pageNumber, pageSize);
 
         Page<ReminiPageResponse> response = reminiService.getPageByType(request, category);
