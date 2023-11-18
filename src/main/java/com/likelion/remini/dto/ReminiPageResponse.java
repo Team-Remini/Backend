@@ -3,8 +3,6 @@ package com.likelion.remini.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.likelion.remini.domain.Remini;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ReminiPageResponse {
+
+    @ApiModelProperty(value = "회고 ID", example = "1")
+    private final Long reminiId;
 
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")
     private final String title;
@@ -30,8 +31,9 @@ public class ReminiPageResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdDate;
 
-    private ReminiPageResponse(String title, String reminiImage, long likesCount, boolean isLiked,
+    private ReminiPageResponse(Long reminiId, String title, String reminiImage, long likesCount, boolean isLiked,
                                LocalDateTime createdDate) {
+        this.reminiId = reminiId;
         this.title = title;
         this.reminiImage = reminiImage;
         this.likesCount = likesCount;
@@ -41,13 +43,13 @@ public class ReminiPageResponse {
 
     public static ReminiPageResponse of(Remini remini, String reminiImage) {
 
-        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(), false,
-                remini.getCreatedDate());
+        return new ReminiPageResponse(remini.getReminiId(), remini.getTitle(), reminiImage, remini.getLikesCount(),
+                false, remini.getCreatedDate());
     }
 
     public static ReminiPageResponse of(Remini remini, String reminiImage, boolean isLiked) {
 
-        return new ReminiPageResponse(remini.getTitle(), reminiImage, remini.getLikesCount(), isLiked,
-                remini.getCreatedDate());
+        return new ReminiPageResponse(remini.getReminiId(), remini.getTitle(), reminiImage, remini.getLikesCount(),
+                isLiked, remini.getCreatedDate());
     }
 }

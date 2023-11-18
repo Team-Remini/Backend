@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
 @Builder
 public class ReminiDetailResponse {
 
+    @ApiModelProperty(value = "회고 ID", example = "1")
+    private final Long reminiId;
+
     @ApiModelProperty(value = "회고 카테고리", example = "KPT")
     private final Type type;
 
@@ -65,6 +68,7 @@ public class ReminiDetailResponse {
         User owner = remini.getUser();
 
         return ReminiDetailResponse.builder()
+                .reminiId(remini.getReminiId())
                 .type(remini.getType())
                 .title(remini.getTitle())
                 .nickname(owner.getNickname())
