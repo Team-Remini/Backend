@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -19,7 +22,11 @@ public class UserService {
     private final AuthTokensGenerator authTokensGenerator;
 
     /* 회원 관리 */
-    //사용자 정보 조회 api
+    /**
+     * 요청자의 사용자정보를 조회하는 메서드이다.
+     *
+     * @return userResponseDTO 요청자의 사용자 정보
+     */
     @Transactional
     public UserResponseDTO getUserInfo(){
         User user = getUser();
@@ -32,7 +39,11 @@ public class UserService {
         return userResponseDTO;
     }
 
-    //구독 모델 변경 api
+    /**
+     * 사용자의 구독 유형을 갱신하는 메서드이다.
+     *
+     * @param newState 사용자의 갱신되는 구독 유형
+     */
     @Transactional
     public void updateUserState(State newState){
         User userToUpdate = getUser();
@@ -56,6 +67,24 @@ public class UserService {
         }
 
     }
+    /**
+     * 프리미엄 사용자의 구독 유형을 자동 갱신하는 메서드이다.
+     *
+     *
+     */
+    @Transactional
+    public void automaticUpdatePremiumUserState(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Long> userIdList = userRepository.findUserIdListAfterExpiration(currentTime);
+        for(Long userId : userIdList){
+            User userToUpdate = userRepository.findById(userId)
+                    .orElseThrow(()->new UserException(UserErrorResult.USER_NOT_FOUND));
+            userToUpdate.setExpirationDate();
+            userRepository.save(userToUpdate);
+        }
+    }
+
+
 
     private User getUser() {
         Long userId = authTokensGenerator.extractMemberId();

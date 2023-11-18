@@ -5,10 +5,7 @@ import com.likelion.remini.dto.ReminiUpdateRequestDTO;
 import com.likelion.remini.dto.StateUpdateRequest;
 import com.likelion.remini.dto.UserResponseDTO;
 import com.likelion.remini.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +28,27 @@ public class UserController {
     //구독 모델 변경 api
     @PatchMapping("/state")
     @ApiOperation(value = "구독 모델 변경")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "구독 모델 변경 성공"),
+            @ApiResponse(code = 500, message = "서버 내 오류")
+    })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", value="변경할 구독 모델", required = true, paramType = "body", dataTypeClass = StateUpdateRequest.class)
     })
     public ResponseEntity<Long> updateUserState(@RequestBody StateUpdateRequest request){
         userService.updateUserState(request.getState());
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    //premium 구독 모델 자동 갱신 api
+    @PatchMapping("/automatic")
+    @ApiOperation(value = "premium 구독 모델 자동 갱신")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "premium 구독 모델 자동 갱신 완료"),
+            @ApiResponse(code = 500, message = "서버 내 오류")
+    })
+    public ResponseEntity<Long> automaticUpdatePremiumUserState(){
+        userService.automaticUpdatePremiumUserState();
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
