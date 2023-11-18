@@ -83,10 +83,10 @@ public class ReminiService {
     public ReminiResponse updateRemini(Long reminiId, ReminiUpdateRequestDTO reminiUpdateRequestDTO){
         User user = getUser();
         Remini reminiToUpdate = reminiRepository.findById(reminiId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
+                .orElseThrow(()-> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
         //사용자 소유한 회고인지 확인, 필요없을 시 삭제해도 ㄱㅊ
         if (!reminiToUpdate.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("해당 회고를 수정할 권한이 없습니다.");
+            throw new ReminiException(ReminiErrorResult.NON_OWNER);
         }
         //회고 관련된 기존 연관 section 객체 삭제
         sectionRepository.deleteAllByRemini(reminiToUpdate);
@@ -102,7 +102,7 @@ public class ReminiService {
     @Transactional
     public void deleteRemini(Long reminiId){
         Remini reminiToDelete = reminiRepository.findById(reminiId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
+                .orElseThrow(()-> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
         //remini 관련 section 삭제
         sectionRepository.deleteAllByRemini(reminiToDelete);
         //remini 삭제
@@ -115,7 +115,7 @@ public class ReminiService {
     public Long createLike(Long reminiId){
         User user = getUser();
         Remini reminiToLike = reminiRepository.findById(reminiId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
+                .orElseThrow(()-> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
         //좋아요를 누르지 않았다면
         if(!hasLiked(reminiId)){
@@ -140,7 +140,7 @@ public class ReminiService {
     public boolean hasLiked(Long reminiId){
         User user = getUser();
         Remini remini = reminiRepository.findById(reminiId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
+                .orElseThrow(()-> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
         return likeRepository.existsByUserAndRemini(user,remini);
     }
@@ -149,7 +149,7 @@ public class ReminiService {
     public Long unlike(Long reminiId){
         User user = getUser();
         Remini remini = reminiRepository.findById(reminiId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
+                .orElseThrow(()-> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
         Like like = likeRepository.findByUserAndRemini(user,remini)
                 .orElseThrow(() -> new IllegalArgumentException("해당 userid, reminiid로 찾을 수 없습니다 : " + user.getId()+ "," + reminiId));
