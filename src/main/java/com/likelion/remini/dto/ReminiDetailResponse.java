@@ -3,6 +3,7 @@ package com.likelion.remini.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.Section;
+import com.likelion.remini.domain.Type;
 import com.likelion.remini.domain.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class ReminiDetailResponse {
 
     @ApiModelProperty(value = "회고 카테고리", example = "kpt")
-    private final String type;
+    private final Type type;
 
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")
     private final String title;

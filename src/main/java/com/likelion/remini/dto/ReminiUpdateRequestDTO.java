@@ -1,5 +1,6 @@
 package com.likelion.remini.dto;
 
+import com.likelion.remini.domain.Type;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.util.List;
 public class ReminiUpdateRequestDTO {
 
     @ApiModelProperty(value = "회고 카테고리", example = "kpt")
-    private String type;
+    private Type type;
 
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")
     private String title;
@@ -33,7 +34,7 @@ public class ReminiUpdateRequestDTO {
     private List<String> sectionTexts;
 
     @Builder
-    public ReminiUpdateRequestDTO(String type, String title, String reminiImageUrl, Boolean instantSave, Integer step, List<String> sectionTexts){
+    public ReminiUpdateRequestDTO(Type type, String title, String reminiImageUrl, Boolean instantSave, Integer step, List<String> sectionTexts){
         this.type = type;
         this.title = title;
         this.reminiImageUrl = reminiImageUrl;

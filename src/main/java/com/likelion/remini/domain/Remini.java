@@ -26,7 +26,8 @@ public class Remini {
     @JoinColumn(name ="user_id")
     private User user;
 
-    private String type;
+    @Enumerated(value = EnumType.STRING)
+    private Type type;
 
     private String title;
 
@@ -51,7 +52,7 @@ public class Remini {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public Remini(User user, String type, String title, String reminiImageUrl, Boolean instantSave, Integer step, Long likesCount, LocalDateTime createdDate, LocalDateTime modifiedDate, List<Section> sectionList) {
+    public Remini(User user, Type type, String title, String reminiImageUrl, Boolean instantSave, Integer step, Long likesCount, LocalDateTime createdDate, LocalDateTime modifiedDate, List<Section> sectionList) {
         this.user = user;
         this.type = type;
         this.title = title;
