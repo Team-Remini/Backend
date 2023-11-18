@@ -1,12 +1,18 @@
 package com.likelion.remini.controller;
 
 import com.likelion.remini.domain.State;
+import com.likelion.remini.dto.ReminiUpdateRequestDTO;
+import com.likelion.remini.dto.StateUpdateRequest;
 import com.likelion.remini.dto.UserResponseDTO;
 import com.likelion.remini.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +30,12 @@ public class UserController {
     }
     //구독 모델 변경 api
     @PatchMapping("/state")
-    public ResponseEntity<Long> updateUserState(@RequestBody State newState){
-        userService.updateUserState(newState);
+    @ApiOperation(value = "구독 모델 변경")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "request", value="변경할 구독 모델", required = true, paramType = "body", dataTypeClass = StateUpdateRequest.class)
+    })
+    public ResponseEntity<Long> updateUserState(@RequestBody StateUpdateRequest request){
+        userService.updateUserState(request.getState());
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
