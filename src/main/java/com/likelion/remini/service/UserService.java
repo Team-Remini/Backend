@@ -3,6 +3,8 @@ package com.likelion.remini.service;
 import com.likelion.remini.domain.State;
 import com.likelion.remini.domain.User;
 import com.likelion.remini.dto.UserResponseDTO;
+import com.likelion.remini.exception.UserErrorResult;
+import com.likelion.remini.exception.UserException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,7 @@ public class UserService {
     //사용자 정보 조회 api
     @Transactional
     public UserResponseDTO getUserInfo(){
-        Long userId = authTokensGenerator.extractMemberId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+        User user = getUser();
         UserResponseDTO userResponseDTO = UserResponseDTO.builder()
                 .nickName(user.getNickname())
                 .state(user.getState())
@@ -35,9 +35,7 @@ public class UserService {
     //구독 모델 변경 api
     @Transactional
     public void updateUserState(State newState){
-        Long userId = authTokensGenerator.extractMemberId();
-        User userToUpdate = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 userid로 찾을 수 없습니다 : " + userId));
+        User userToUpdate = getUser();
         //state가 standard -> premium : state 변경, 현재 시각 기준 + 1달이 expiration date로 설정
         //state가 premium -> standard : state 변경, expiration date null 설정
         //state가 premium -> premium(갱신) : 현재 시각 기준 + 1달이 expiration date로 설정
@@ -59,5 +57,9 @@ public class UserService {
 
     }
 
-
+    private User getUser() {
+        Long userId = authTokensGenerator.extractMemberId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
 }
