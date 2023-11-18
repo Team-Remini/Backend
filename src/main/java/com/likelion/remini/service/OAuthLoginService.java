@@ -1,5 +1,6 @@
 package com.likelion.remini.service;
 
+import com.likelion.remini.domain.State;
 import com.likelion.remini.jwt.AuthTokens;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.jwt.OAuthInfoResponse;
@@ -34,7 +35,7 @@ public class OAuthLoginService {
                 .nickname(oAuthInfoResponse.getNickname())
                 .profileImageURL((oAuthInfoResponse.getProfileImageURL()))
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
-                .state("standard")
+                .state(State.STANDARD)
                 .build();
 
         return userRepository.save(user).getId();

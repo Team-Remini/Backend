@@ -1,6 +1,7 @@
 package com.likelion.remini.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.likelion.remini.domain.State;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,8 @@ public class UserResponseDTO {
     @ApiModelProperty(value = "닉네임", example = "레미니")
     private String nickName;
 
-    @ApiModelProperty(value = "구독모델", example = "standard")
-    private String state;
+    @ApiModelProperty(value = "구독모델", example = "STANDARD")
+    private State state;
 
     @ApiModelProperty(value = "프로필 사진 URL", example = "http://k.kakaocdn.net/dn/1G9kp/btsAot8liOn/8CWudi3uy07rvFNUkk3ER0/img_640x640.jpg")
     private String profileImageUrl;
@@ -25,7 +26,7 @@ public class UserResponseDTO {
     private LocalDateTime expirationDate;
 
     @Builder
-    public UserResponseDTO(String nickName, String state, String profileImageUrl, LocalDateTime expirationDate){
+    public UserResponseDTO(String nickName, State state, String profileImageUrl, LocalDateTime expirationDate){
         this.nickName = nickName;
         this.state = state;
         this.profileImageUrl = profileImageUrl;

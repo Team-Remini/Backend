@@ -27,7 +27,7 @@ public class User {
 
     private String email;
 
-    private String state;
+    private State state;
 
     private LocalDateTime expirationDate;
 
@@ -40,7 +40,7 @@ public class User {
     private List<Remini> reminiList = new ArrayList<>();
 
     @Builder
-    public User(String email, String nickname, String profileImageURL,String state, LocalDateTime expirationDate,LocalDateTime alarmTime, OAuthProvider oAuthProvider, List<Remini> reminiList) {
+    public User(String email, String nickname, String profileImageURL, State state, LocalDateTime expirationDate, LocalDateTime alarmTime, OAuthProvider oAuthProvider, List<Remini> reminiList) {
         this.nickname = nickname;
         this.profileImageURL = profileImageURL;
         this.email = email;
@@ -53,10 +53,10 @@ public class User {
 
     //구독 모델 변경을 위한 메서드
     public void standardToPremium(){
-        this.state = "premium";
+        this.state = State.PREMIUM;
     }
     public void premiumToStandard(){
-        this.state = "standard";
+        this.state = State.STANDARD;
     }
     public void initializeExpirationDate(){
         this.expirationDate = null;

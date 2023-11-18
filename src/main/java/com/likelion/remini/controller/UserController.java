@@ -1,5 +1,6 @@
 package com.likelion.remini.controller;
 
+import com.likelion.remini.domain.State;
 import com.likelion.remini.dto.UserResponseDTO;
 import com.likelion.remini.service.UserService;
 import io.swagger.annotations.Api;
@@ -23,7 +24,7 @@ public class UserController {
     }
     //구독 모델 변경 api
     @PatchMapping("/state")
-    public ResponseEntity<Long> updateUserState(@RequestBody String newState){
+    public ResponseEntity<Long> updateUserState(@RequestBody State newState){
         userService.updateUserState(newState);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
