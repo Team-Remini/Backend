@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserErrorResult implements ErrorResult {
 
+    ANONYMOUS_USER(HttpStatus.UNAUTHORIZED, "Anonymous user"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Failed to find the User"),
     ;
 

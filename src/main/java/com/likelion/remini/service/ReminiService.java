@@ -2,13 +2,17 @@ package com.likelion.remini.service;
 
 import com.likelion.remini.domain.*;
 import com.likelion.remini.dto.*;
-import com.likelion.remini.exception.*;
+import com.likelion.remini.exception.ReminiErrorResult;
+import com.likelion.remini.exception.ReminiException;
+import com.likelion.remini.exception.UserErrorResult;
+import com.likelion.remini.exception.UserException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.LikeRepository;
 import com.likelion.remini.repository.ReminiRepository;
-import com.likelion.remini.repository.UserRepository;
 import com.likelion.remini.repository.SectionRepository;
-import lombok.RequiredArgsConstructor;
+import com.likelion.remini.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReminiService {
 
@@ -31,6 +34,29 @@ public class ReminiService {
     private final LikeRepository likeRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final PresignedUrlService presignedUrlService;
+    private final Long ANONYMOUS_USER_ID;
+
+    /**
+     * 의존성 주입을 위한 생성자.
+     * ANONYMOUS_USER_ID에 @Value 어노테이션으로 값을 주입하기 위해
+     * 별도의 생성자를 통해 정의하였다.
+     */
+    @Autowired
+    public ReminiService(ReminiRepository reminiRepository,
+                         UserRepository userRepository,
+                         SectionRepository sectionRepository,
+                         LikeRepository likeRepository,
+                         AuthTokensGenerator authTokensGenerator,
+                         PresignedUrlService presignedUrlService,
+                         @Value("${jwt.anonymous-user-id}") Long ANONYMOUS_USER_ID) {
+        this.reminiRepository = reminiRepository;
+        this.userRepository = userRepository;
+        this.sectionRepository = sectionRepository;
+        this.likeRepository = likeRepository;
+        this.authTokensGenerator = authTokensGenerator;
+        this.presignedUrlService = presignedUrlService;
+        this.ANONYMOUS_USER_ID = ANONYMOUS_USER_ID;
+    }
 
     /* 회고 관리 */
     //회고 등록 api
@@ -186,7 +212,7 @@ public class ReminiService {
      */
     public ReminiDetailResponse getDetail(Long reminiId) {
 
-        User user = getUser();
+        User user = getUserOrAnonymous();
 
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
@@ -251,7 +277,7 @@ public class ReminiService {
      */
     public Page<ReminiPageResponse> getPage(PageRequest request) {
 
-        User user = getUser();
+        User user = getUserOrAnonymous();
 
         Page<Remini> reminiPage = reminiRepository.findAllByInstantSave(request, false);
 
@@ -276,7 +302,7 @@ public class ReminiService {
      */
     public Page<ReminiPageResponse> getPageByType(PageRequest request, Type type) {
 
-        User user = getUser();
+        User user = getUserOrAnonymous();
 
         Page<Remini> reminiPage = reminiRepository.findAllByTypeAndInstantSave(request, type, false);
 
@@ -294,6 +320,28 @@ public class ReminiService {
 
     private User getUser() {
         Long userId = authTokensGenerator.extractMemberId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
+
+    /**
+     * 로그인한 사용자 엔티티를 반환하거나, 익명 사용자인 경우 익명사용자 전용 엔티티를 반환하는 메서드이다.
+     *
+     * @return 사용자 엔티티
+     */
+    private User getUserOrAnonymous() {
+        Long userId;
+
+        try {
+            userId = authTokensGenerator.extractMemberId();
+        } catch (UserException e) {
+            // 익명 사용자 관련 UserException이 아닌 경우, 예외를 다시 던진다.
+            if (!e.getErrorResult().equals(UserErrorResult.ANONYMOUS_USER)) {
+                throw e;
+            }
+            userId = ANONYMOUS_USER_ID;
+        }
+
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }

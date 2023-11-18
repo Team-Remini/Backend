@@ -1,5 +1,7 @@
 package com.likelion.remini.jwt;
 
+import com.likelion.remini.exception.UserErrorResult;
+import com.likelion.remini.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +37,7 @@ public class AuthTokensGenerator {
         }
 
         if ("anonymousUser".equals(authentication.getName())) {
-            throw new RuntimeException("익명 사용자입니다.");
+            throw new UserException(UserErrorResult.ANONYMOUS_USER);
         }
         return Long.parseLong(authentication.getName());
     }
