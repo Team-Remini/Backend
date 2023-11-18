@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +38,7 @@ public class ReminiService {
     /* 회고 관리 */
     //회고 등록 api
     @Transactional
-    public Long createRemini(ReminiRequestDTO reminiRequestDTO) {
+    public ReminiResponse createRemini(ReminiRequestDTO reminiRequestDTO) {
         User user = getUser();
         List<String> sectionTexts = reminiRequestDTO.getSectionTexts();
         List<Section> sections = new ArrayList<>();
@@ -51,12 +52,16 @@ public class ReminiService {
                 sections.add(section);
             }
         }
+
+        // 회고 사진 파일명을 고유한 값으로 설정
+        String uuid = UUID.randomUUID().toString();
+
         //remini 객체 생성, section과 연관관계 설정
         Remini remini = Remini.builder()
                 .user(user)
                 .type(reminiRequestDTO.getType())
                 .title(reminiRequestDTO.getTitle())
-                .reminiImageUrl(reminiRequestDTO.getReminiImage())
+                .reminiImage(uuid)
                 .instantSave(reminiRequestDTO.getInstantSave())
                 .step(reminiRequestDTO.getStep())
                 .likesCount(0L)
@@ -67,13 +72,15 @@ public class ReminiService {
         for(Section section: sectionList){
             section.setRemini(remini);
         }
-        Remini savedRemini = reminiRepository.save(remini);
 
-        return savedRemini.getReminiId();
+        Remini savedRemini = reminiRepository.save(remini);
+        String presignedUploadUrl = presignedUrlService.getPresignedUploadUrl(remini.getReminiImage());
+
+        return new ReminiResponse(savedRemini.getReminiId(), presignedUploadUrl);
     }
     //회고 수정 api
     @Transactional
-    public Long updateRemini(Long reminiId, ReminiUpdateRequestDTO reminiUpdateRequestDTO){
+    public ReminiResponse updateRemini(Long reminiId, ReminiUpdateRequestDTO reminiUpdateRequestDTO){
         User user = getUser();
         Remini reminiToUpdate = reminiRepository.findById(reminiId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 reminiid로 찾을 수 없습니다 : " + reminiId));
@@ -85,7 +92,10 @@ public class ReminiService {
         sectionRepository.deleteAllByRemini(reminiToUpdate);
         //수정 사항 반영, section 객체는 새로 생성
         reminiToUpdate.update(reminiUpdateRequestDTO);
-        return reminiId;
+
+        String presignedUploadUrl = presignedUrlService.getPresignedUploadUrl(reminiToUpdate.getReminiImage());
+
+        return new ReminiResponse(reminiId, presignedUploadUrl);
     }
 
     //회고 삭제 api
@@ -166,7 +176,7 @@ public class ReminiService {
             throw new ReminiException(ReminiErrorResult.NON_OWNER);
         }
 
-        return presignedUrlService.getPresignedUploadUrl(remini.getReminiImageUrl());
+        return presignedUrlService.getPresignedUploadUrl(remini.getReminiImage());
     }
 
     /* 회고 조회 */
@@ -184,7 +194,7 @@ public class ReminiService {
         Remini remini = reminiRepository.findById(reminiId)
                 .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
 
-        String reminiImage = presignedUrlService.getPresignedUrl(remini.getReminiImageUrl());
+        String reminiImage = presignedUrlService.getPresignedUrl(remini.getReminiImage());
 
         boolean isLiked = likeRepository.findByUserAndRemini(user, remini).isPresent();
 
@@ -205,7 +215,7 @@ public class ReminiService {
 
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl())))
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImage())))
                         .collect(Collectors.toList()),
                 request,
                 reminiPage.getTotalElements()
@@ -228,7 +238,7 @@ public class ReminiService {
 
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImage()),
                                 likedList.contains(v.getReminiId())))
                         .collect(Collectors.toList()),
                 request,
@@ -252,7 +262,7 @@ public class ReminiService {
 
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImage()),
                                 likedList.contains(v.getReminiId())))
                         .collect(Collectors.toList()),
                 request,
@@ -277,7 +287,7 @@ public class ReminiService {
 
         return new PageImpl<>(
                 reminiPage.stream()
-                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImageUrl()),
+                        .map(v -> ReminiPageResponse.of(v, presignedUrlService.getPresignedUrl(v.getReminiImage()),
                                 likedList.contains(v.getReminiId())))
                         .collect(Collectors.toList()),
                 request,

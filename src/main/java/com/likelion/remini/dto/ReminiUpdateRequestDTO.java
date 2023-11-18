@@ -13,14 +13,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReminiUpdateRequestDTO {
 
-    @ApiModelProperty(value = "회고 카테고리", example = "kpt")
+    @ApiModelProperty(value = "회고 카테고리", example = "KPT")
     private Type type;
 
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")
     private String title;
-
-    @ApiModelProperty(value = "회고 사진 URL", example = "https://remini-bucket.s3.ap-northeast-2.amazonaws.com/remini-sample.jpg")
-    private String reminiImageUrl;
 
     @ApiModelProperty(value = "임시저장 여부", example = "false")
     private Boolean instantSave;
@@ -37,10 +34,9 @@ public class ReminiUpdateRequestDTO {
     private List<String> sectionTexts;
 
     @Builder
-    public ReminiUpdateRequestDTO(Type type, String title, String reminiImageUrl, Boolean instantSave, Integer step, List<String> sectionTexts){
+    public ReminiUpdateRequestDTO(Type type, String title, Boolean instantSave, Integer step, List<String> sectionTexts){
         this.type = type;
         this.title = title;
-        this.reminiImageUrl = reminiImageUrl;
         this.instantSave = instantSave;
         this.step = step;
         this.sectionTexts = sectionTexts;

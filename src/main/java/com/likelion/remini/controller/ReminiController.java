@@ -30,9 +30,9 @@ public class ReminiController {
             @ApiResponse(code = 201, message = "회고 생성 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    public ResponseEntity<Long> createRemini(@RequestBody ReminiRequestDTO reminiRequestDTO){
+    public ResponseEntity<ReminiResponse> createRemini(@RequestBody ReminiRequestDTO reminiRequestDTO){
 
-        Long reminiId = reminiService.createRemini(reminiRequestDTO);
+        ReminiResponse reminiId = reminiService.createRemini(reminiRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(reminiId);
     }
 
@@ -46,9 +46,9 @@ public class ReminiController {
             @ApiResponse(code = 200, message = "회고 수정 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    public ResponseEntity<Long> updateRemini(@PathVariable Long reminiId, @RequestBody ReminiUpdateRequestDTO reminiUpdateRequestDTO) {
+    public ResponseEntity<ReminiResponse> updateRemini(@PathVariable Long reminiId, @RequestBody ReminiUpdateRequestDTO reminiUpdateRequestDTO) {
 
-        Long updatedReminiId = reminiService.updateRemini(reminiId, reminiUpdateRequestDTO);
+        ReminiResponse updatedReminiId = reminiService.updateRemini(reminiId, reminiUpdateRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReminiId);
     }
 

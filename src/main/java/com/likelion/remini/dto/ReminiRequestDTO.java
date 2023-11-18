@@ -18,9 +18,6 @@ public class ReminiRequestDTO {
     @ApiModelProperty(value = "회고 제목", example = "LIKELION 11기 중앙 해커톤 회고")
     private String title;
 
-    @ApiModelProperty(value = "회고 사진 이름", example = "remini-sample.jpg")
-    private String reminiImage;
-
     @ApiModelProperty(value = "임시저장 여부", example = "false")
     private Boolean instantSave;
 

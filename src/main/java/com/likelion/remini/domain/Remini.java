@@ -31,7 +31,7 @@ public class Remini {
 
     private String title;
 
-    private String reminiImageUrl;
+    private String reminiImage;
 
     private Boolean instantSave;
 
@@ -52,11 +52,11 @@ public class Remini {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public Remini(User user, Type type, String title, String reminiImageUrl, Boolean instantSave, Integer step, Long likesCount, LocalDateTime createdDate, LocalDateTime modifiedDate, List<Section> sectionList) {
+    public Remini(User user, Type type, String title, String reminiImage, Boolean instantSave, Integer step, Long likesCount, LocalDateTime createdDate, LocalDateTime modifiedDate, List<Section> sectionList) {
         this.user = user;
         this.type = type;
         this.title = title;
-        this.reminiImageUrl = reminiImageUrl;
+        this.reminiImage = reminiImage;
         this.instantSave = instantSave;
         this.step = step;
         this.likesCount = likesCount;
@@ -71,7 +71,6 @@ public class Remini {
 
         this.type = updateRequestDTO.getType();
         this.title = updateRequestDTO.getTitle();
-        this.reminiImageUrl = updateRequestDTO.getReminiImageUrl();
         this.instantSave = updateRequestDTO.getInstantSave();
         this.step = updateRequestDTO.getStep();
         this.modifiedDate = LocalDateTime.now();
