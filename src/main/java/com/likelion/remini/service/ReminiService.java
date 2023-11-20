@@ -59,7 +59,12 @@ public class ReminiService {
     }
 
     /* 회고 관리 */
-    //회고 등록 api
+    /**
+     * 회고의 좋아요를 생성하는 메서드이다.
+     *
+     * @param reminiRequestDTO 회고 생성 시 요구되는 정보
+     * @return 회고 Id, presignedUploadUrl(이미지 업로드 url)
+     */
     @Transactional
     public ReminiResponse createRemini(ReminiRequestDTO reminiRequestDTO) {
         User user = getUser();
@@ -101,7 +106,12 @@ public class ReminiService {
 
         return new ReminiResponse(savedRemini.getReminiId(), presignedUploadUrl);
     }
-    //회고 수정 api
+    /**
+     * 회고를 수정하는 메서드이다.
+     *
+     * @param reminiId, reminiRequestDTO 회고 생성 시 요구되는 정보
+     * @return reminiId, presignedUploadUrl(이미지 업로드 url)
+     */
     @Transactional
     public ReminiResponse updateRemini(Long reminiId, ReminiUpdateRequestDTO reminiUpdateRequestDTO){
         User user = getUser();
@@ -121,7 +131,12 @@ public class ReminiService {
         return new ReminiResponse(reminiId, presignedUploadUrl);
     }
 
-    //회고 삭제 api
+    /**
+     * 주어진 ID를 가진 회고를 삭제하는 메서드이다.
+     *
+     * @param reminiId 회고 ID
+     *
+     */
     @Transactional
     public void deleteRemini(Long reminiId){
         Remini reminiToDelete = reminiRepository.findById(reminiId)
@@ -132,8 +147,12 @@ public class ReminiService {
         reminiRepository.delete(reminiToDelete);
     }
 
-    //좋아요 api
-    //좋아요 생성 api
+    /**
+     * 주어진 ID를 가진 회고의 좋아요를 생성하는 메서드이다.
+     *
+     * @param reminiId 회고 ID
+     * @return 회고 좋아요 개수
+     */
     @Transactional
     public Long createLike(Long reminiId){
         User user = getUser();
@@ -159,7 +178,12 @@ public class ReminiService {
         }
 
     }
-    //좋아요 여부 api
+    /**
+     * 좋아요 여부를 반환하는 메서드이다.
+     *
+     * @param reminiId 회고 아이디
+     * @return true/false 좋아요 여부
+     */
     public boolean hasLiked(Long reminiId){
         User user = getUser();
         Remini remini = reminiRepository.findById(reminiId)
@@ -167,7 +191,12 @@ public class ReminiService {
 
         return likeRepository.existsByUserAndRemini(user,remini);
     }
-    //좋아요 취소 api (추가로 구현한 부분 지워도 무방)
+    /**
+     * 좋아요를 취소하는 메서드이다.
+     *
+     * @param reminiId 회고 아이디
+     * @return likesCount 회고의 좋아요 개수
+     */
     @Transactional
     public Long unlike(Long reminiId){
         User user = getUser();
