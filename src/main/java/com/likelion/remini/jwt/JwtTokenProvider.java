@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 @Component
@@ -36,7 +37,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) throws ExpiredJwtException {
         Claims claims = parseClaims(accessToken);
 
-        Collection<? extends GrantedAuthority> roles = new ArrayList<>();
+        Collection<? extends GrantedAuthority> roles = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails user = new User(claims.getSubject(), "", roles);
         return new UsernamePasswordAuthenticationToken(user, "", roles);
     }
