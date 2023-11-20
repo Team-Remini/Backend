@@ -54,7 +54,7 @@ public class AlarmService {
      *
      */
     @Transactional
-    @Scheduled(cron = "0 0 1 * * *") // 정각마다 실행
+    @Scheduled(cron = "0 0 * * * ?") // 정각마다 실행
     public void checkAndSendAlarms(){
         LocalDateTime currentTime = LocalDateTime.now();
         List<Long> userIdList = userRepository.findUserIdListAfterAlarm(currentTime);
@@ -74,7 +74,7 @@ public class AlarmService {
      *
      */
     @Transactional
-    @Scheduled(cron = "0 0 1 * * *") // 정각마다 실행
+    @Scheduled(cron = "0 0 * * * *") // 정각마다 실행
     public void checkAndSendAlarmsForSubscribe(){
         LocalDateTime threeDayAfter = LocalDateTime.now().plusDays(3);
         List<Long> userIdList = userRepository.findUserIdListAfterExpiration(threeDayAfter);
@@ -89,9 +89,9 @@ public class AlarmService {
         }
     }
     /**
-     * 요청자의 알람을 설정하는 메서드이다.
+     * 요청자에게 알람을 전송하는 메서드이다.
      *
-     * @param user, text 알람 대상자, 알람 메일 내용
+     * @param user, subject, text 알람 대상자, 내용, 알람 메일 내용
      */
     public void sendAlarm(User user, String subject, String text){
         SimpleMailMessage message = new SimpleMailMessage();
