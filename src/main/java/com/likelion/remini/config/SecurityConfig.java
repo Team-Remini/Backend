@@ -7,6 +7,7 @@ import com.likelion.remini.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -83,6 +84,13 @@ public class SecurityConfig{ //extends WebSecurityConfigurerAdapter, deprecated?
 
     };
 
+    private final String[] URL_TO_ANONYMOUS = {
+            "/api/remini/{\\d+}",
+            "/api/remini/recent",
+            "/api/remini/popular",
+            "/api/remini/category",
+    };
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -103,6 +111,7 @@ public class SecurityConfig{ //extends WebSecurityConfigurerAdapter, deprecated?
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(URL_TO_PERMIT).permitAll()
+                .antMatchers(HttpMethod.GET, URL_TO_ANONYMOUS).hasAnyRole("USER","ANONYMOUS")
                 .anyRequest().authenticated()
                 //.requestMatchers(new AntPathRequestMatcher("/**"))
                 .and()
