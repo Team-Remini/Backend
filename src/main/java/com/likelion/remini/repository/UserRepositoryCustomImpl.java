@@ -18,7 +18,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
         return queryFactory
                 .select(qUser.id)
                 .from(qUser)
-                .where(qUser.alarmTime.isNotNull(), qUser.alarmTime.after(currentTime))
+                .where(qUser.alarmTime.isNotNull().and(qUser.alarmTime.after(currentTime)))
                 .fetch();
     }
 
