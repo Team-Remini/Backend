@@ -29,7 +29,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
         return queryFactory
                 .select(qUser.id)
                 .from(qUser)
-                .where(qUser.expirationDate.isNotNull(), qUser.expirationDate.after(currentTime))
+                .where(qUser.expirationDate.isNotNull().and(qUser.expirationDate.after(currentTime)))
                 .fetch();
     }
 
