@@ -1,8 +1,6 @@
 package com.likelion.remini.service;
 
 import com.likelion.remini.domain.User;
-import com.likelion.remini.exception.UserErrorResult;
-import com.likelion.remini.exception.UserException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,10 +55,8 @@ public class AlarmService {
     @Scheduled(cron = "0 0 * * * ?") // 정각마다 실행
     public void checkAndSendAlarms(){
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Long> userIdList = userRepository.findUserIdListAfterAlarm(currentTime);
-        for(Long userId : userIdList){
-            User user = userRepository.findById(userId)
-                    .orElseThrow(()->new UserException(UserErrorResult.USER_NOT_FOUND));
+        List<User> userList = userRepository.findUserListAfterAlarm(currentTime);
+        for(User user : userList){
             String subject = "제목 : 설정 된 알림 발송";
             String message = "내용 : 설정 된 알림 발송";
             sendAlarm(user, subject, message);
@@ -77,10 +73,8 @@ public class AlarmService {
     @Scheduled(cron = "0 0 * * * *") // 정각마다 실행
     public void checkAndSendAlarmsForSubscribe(){
         LocalDateTime threeDayAfter = LocalDateTime.now().plusDays(3);
-        List<Long> userIdList = userRepository.findUserIdListAfterExpiration(threeDayAfter);
-        for(Long userId : userIdList){
-            User user = userRepository.findById(userId)
-                    .orElseThrow(()->new UserException(UserErrorResult.USER_NOT_FOUND));
+        List<User> userList = userRepository.findUserListAfterExpiration(threeDayAfter);
+        for(User user : userList){
             String subject = "제목 : 3일 뒤에 구독 갱신됩니다";
             String message = "내용 : 3일 뒤에 구독 갱신됩니다";
             sendAlarm(user, subject, message);

@@ -75,10 +75,8 @@ public class UserService {
     @Transactional
     public void automaticUpdatePremiumUserState(){
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Long> userIdList = userRepository.findUserIdListAfterExpiration(currentTime);
-        for(Long userId : userIdList){
-            User userToUpdate = userRepository.findById(userId)
-                    .orElseThrow(()->new UserException(UserErrorResult.USER_NOT_FOUND));
+        List<User> userList = userRepository.findUserListAfterExpiration(currentTime);
+        for(User userToUpdate : userList){
             userToUpdate.setExpirationDate();
             userRepository.save(userToUpdate);
         }

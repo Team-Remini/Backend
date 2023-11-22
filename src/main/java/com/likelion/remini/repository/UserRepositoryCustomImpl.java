@@ -1,6 +1,7 @@
 package com.likelion.remini.repository;
 
 import com.likelion.remini.domain.QUser;
+import com.likelion.remini.domain.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -12,24 +13,24 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Long> findUserIdListAfterAlarm(LocalDateTime currentTime){
+    public List<User> findUserListAfterAlarm(LocalDateTime currentTime){
         QUser qUser = QUser.user;
 
         return queryFactory
-                .select(qUser.id)
+                .select(qUser)
                 .from(qUser)
-                .where(qUser.alarmTime.isNotNull().and(qUser.alarmTime.after(currentTime)))
+                .where(qUser.alarmTime.loe(currentTime))
                 .fetch();
     }
 
     @Override
-    public List<Long> findUserIdListAfterExpiration(LocalDateTime currentTime){
+    public List<User> findUserListAfterExpiration(LocalDateTime currentTime){
         QUser qUser = QUser.user;
 
         return queryFactory
-                .select(qUser.id)
+                .select(qUser)
                 .from(qUser)
-                .where(qUser.expirationDate.isNotNull().and(qUser.expirationDate.after(currentTime)))
+                .where(qUser.expirationDate.loe(currentTime))
                 .fetch();
     }
 
