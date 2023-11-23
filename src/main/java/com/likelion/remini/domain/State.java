@@ -1,6 +1,14 @@
 package com.likelion.remini.domain;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public enum State {
-    STANDARD,
-    PREMIUM,
+    STANDARD("Standard"),
+    PREMIUM("Premium"),
+    ;
+
+    private final String name;
 }
