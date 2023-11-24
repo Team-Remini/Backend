@@ -10,7 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -70,15 +72,19 @@ public class AlarmService {
      *
      */
     @Transactional
-    @Scheduled(cron = "0 0 * * * *") // 정각마다 실행
+    @Scheduled(cron = "0 0 9 * * *") // 매일 9시마다 실행
     public void checkAndSendAlarmsForSubscribe(){
-        LocalDateTime threeDayAfter = LocalDateTime.now().plusDays(3);
-        List<User> userList = userRepository.findUserListAfterExpiration(threeDayAfter);
+        long daysLeft = 3L;
+
+        LocalDate expirationDate = LocalDate.now().plusDays(daysLeft);
+        LocalDateTime start = LocalDateTime.of(expirationDate, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(expirationDate, LocalTime.MAX);
+
+        List<User> userList = userRepository.findByExpirationDateBetween(start, end);
         for(User user : userList){
             String subject = "제목 : 3일 뒤에 구독 갱신됩니다";
             String message = "내용 : 3일 뒤에 구독 갱신됩니다";
             sendAlarm(user, subject, message);
-            user.setAlarmTime(null);
             userRepository.save(user);
         }
     }
