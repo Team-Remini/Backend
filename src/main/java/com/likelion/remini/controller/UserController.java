@@ -41,14 +41,14 @@ public class UserController {
     }
 
     //premium 구독 모델 자동 갱신 api
-    @PatchMapping("/automatic")
-    @ApiOperation(value = "premium 구독 모델 자동 갱신")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "premium 구독 모델 자동 갱신 완료"),
-            @ApiResponse(code = 500, message = "서버 내 오류")
-    })
-    public ResponseEntity<Long> automaticUpdatePremiumUserState(){
-        userService.automaticUpdatePremiumUserState();
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
+//    @PatchMapping("/automatic")
+//    @ApiOperation(value = "premium 구독 모델 자동 갱신")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "premium 구독 모델 자동 갱신 완료"),
+//            @ApiResponse(code = 500, message = "서버 내 오류")
+//    })
+//    public ResponseEntity<Long> automaticUpdatePremiumUserState(){
+//        userService.automaticUpdatePremiumUserState();
+//        return ResponseEntity.status(HttpStatus.OK).body(null);
+//    }
 }

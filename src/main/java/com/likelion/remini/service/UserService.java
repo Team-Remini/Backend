@@ -8,6 +8,7 @@ import com.likelion.remini.exception.UserException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,15 +73,16 @@ public class UserService {
      *
      *
      */
-    @Transactional
-    public void automaticUpdatePremiumUserState(){
-        LocalDateTime currentTime = LocalDateTime.now();
-        List<User> userList = userRepository.findUserListAfterExpiration(currentTime);
-        for(User userToUpdate : userList){
-            userToUpdate.setExpirationDate();
-            userRepository.save(userToUpdate);
-        }
-    }
+//    @Transactional
+//    @Scheduled(cron = "0 0 9 * * *") // 매일 9시마다 실행
+//    public void automaticUpdatePremiumUserState(){
+//        LocalDateTime currentTime = LocalDateTime.now();
+//        List<User> userList = userRepository.findUserListAfterExpiration(currentTime);
+//        for(User userToUpdate : userList){
+//            userToUpdate.setExpirationDate();
+//            userRepository.save(userToUpdate);
+//        }
+//    }
 
 
 
