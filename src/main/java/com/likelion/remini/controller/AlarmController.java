@@ -46,7 +46,7 @@ public class AlarmController {
     })
     @PostMapping("/checkAndSendSubscribed")
     public ResponseEntity<String> checkAndSendAlarmsForSubscribed() {
-        alarmService.checkAndSendAlarmsForSubscribe();
+        alarmService.checkAndSendAlarmsForSubscribed();
         return ResponseEntity.status(HttpStatus.OK).body("구독 갱신 알람이 완료되었습니다.");
     }
 

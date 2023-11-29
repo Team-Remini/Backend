@@ -97,7 +97,7 @@ public class AlarmService {
         List<User> userList = userRepository.findByExpirationDateBetween(start, end);
         for(User user : userList){
             String subject = "3일 뒤에 구독 갱신됩니다";
-            sendAlarm_payment_plan(user, subject, user.getState(), user.getExpirationDate(), user.getExpirationDate(), "9900",user.getExpirationDate().plusMonths(1L));
+            sendAlarm_payment_plan(user, subject, user.getState(), user.getExpirationDate(), "9900");
             userRepository.save(user);
         }
     }
@@ -118,7 +118,7 @@ public class AlarmService {
         List<User> userList = userRepository.findByExpirationDateBetween(start, end);
         for(User user : userList){
             String subject = "구독이 갱신되었습니다";
-            sendAlarm_payment_history(user, subject, user.getState(), user.getExpirationDate(), "9900");
+            sendAlarm_payment_history(user, subject, user.getState(), user.getExpirationDate(), user.getExpirationDate(), "9900",user.getExpirationDate().plusMonths(1L));
             user.setExpirationDate();
             userRepository.save(user);
         }
@@ -153,7 +153,7 @@ public class AlarmService {
         }
     }
 
-    public void sendAlarm_payment_history(User user, String subject, State state, LocalDateTime nextPaymentDate, String cost) {
+    public void sendAlarm_payment_plan(User user, String subject, State state, LocalDateTime nextPaymentDate, String cost) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -175,7 +175,7 @@ public class AlarmService {
         }
     }
 
-    public void sendAlarm_payment_plan(User user, String subject, State state, LocalDateTime paymentDate, LocalDateTime expirationDate, String cost, LocalDateTime nextPaymentDate) {
+    public void sendAlarm_payment_history(User user, String subject, State state, LocalDateTime paymentDate, LocalDateTime expirationDate, String cost, LocalDateTime nextPaymentDate) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
