@@ -32,23 +32,25 @@ public class AlarmController {
             @ApiResponse(code = 200, message = "알람 전송 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    @PostMapping("/checkAndSend")
+    @PostMapping("/checkAndSendBeforeSubscribe")
     public ResponseEntity<String> checkAndSendAlarmsForSubscribe() {
         alarmService.checkAndSendAlarmsForSubscribe();
         return ResponseEntity.status(HttpStatus.OK).body("구독 3일 전 알람이 완료되었습니다.");
     }
 
-    // 알람을 발송
-    @ApiOperation(value = "메일을 발송")
+    // 갱신 알림 메일을 발송
+    @ApiOperation(value = "갱신 알림 메일을 발송")
     @ApiResponses({
             @ApiResponse(code = 200, message = "알람 전송 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    @PostMapping("/send")
-    public ResponseEntity<String> testAlarm() {
-        alarmService.testAlarm();
-        return ResponseEntity.status(HttpStatus.OK).body("알람 체크 및 발송이 완료되었습니다.");
+    @PostMapping("/checkAndSendSubscribed")
+    public ResponseEntity<String> checkAndSendAlarmsForSubscribed() {
+        alarmService.checkAndSendAlarmsForSubscribed();
+        return ResponseEntity.status(HttpStatus.OK).body("구독 갱신 알람이 완료되었습니다.");
     }
+
+
 
     // 개별 사용자의 알람 시간을 설정
     @PatchMapping("/{userId}")

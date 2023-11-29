@@ -39,6 +39,10 @@ public class Remini {
 
     private Long likesCount;
 
+    public void setReminiImage(String reminiImage) {
+        this.reminiImage = reminiImage;
+    }
+
     @OneToMany(mappedBy = "remini")
     private List<Like> likeList = new ArrayList<>();
 

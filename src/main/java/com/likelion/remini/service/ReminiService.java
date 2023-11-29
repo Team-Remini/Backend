@@ -60,7 +60,7 @@ public class ReminiService {
 
     /* 회고 관리 */
     /**
-     * 회고의 좋아요를 생성하는 메서드이다.
+     * 회고를 생성하는 메서드이다.
      *
      * @param reminiRequestDTO 회고 생성 시 요구되는 정보
      * @return 회고 Id, presignedUploadUrl(이미지 업로드 url)
