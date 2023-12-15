@@ -32,6 +32,9 @@ public class ReminiDetailResponse {
     @ApiModelProperty(value = "작성자 닉네임", example = "레미니")
     private final String nickname;
 
+    @ApiModelProperty(value = "작성자 프로필 사진", example = "http://k.kakaocdn.net/dn/1G9kp/btsAot8liOn/8CWudi3uy07rvFNUkk3ER0/img_640x640.jpg")
+    private final String profileImageURL;
+
     @ApiModelProperty(value = "회고 사진 URL", example = "https://remini-bucket.s3.ap-northeast-2.amazonaws.com/remini-sample.jpg")
     private final String reminiImage;
 
@@ -72,6 +75,7 @@ public class ReminiDetailResponse {
                 .type(remini.getType())
                 .title(remini.getTitle())
                 .nickname(owner.getNickname())
+                .profileImageURL(owner.getProfileImageURL())
                 .reminiImage(reminiImage)
                 .instantSave(remini.getInstantSave())
                 .sectionTexts(remini.getSectionList().stream()
