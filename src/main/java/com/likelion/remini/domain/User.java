@@ -30,6 +30,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private State state;
 
+    @Enumerated(EnumType.STRING)
+    private State toBeState;
+
     private LocalDateTime expirationDate;
 
     private LocalDateTime alarmTime;
@@ -41,11 +44,12 @@ public class User {
     private List<Remini> reminiList = new ArrayList<>();
 
     @Builder
-    public User(String email, String nickname, String profileImageURL, State state, LocalDateTime expirationDate, LocalDateTime alarmTime, OAuthProvider oAuthProvider, List<Remini> reminiList) {
+    public User(String email, String nickname, String profileImageURL, State state,State toBeState, LocalDateTime expirationDate, LocalDateTime alarmTime, OAuthProvider oAuthProvider, List<Remini> reminiList) {
         this.nickname = nickname;
         this.profileImageURL = profileImageURL;
         this.email = email;
         this.state = state;
+        this.toBeState = toBeState;
         this.expirationDate = expirationDate;
         this.alarmTime = alarmTime;
         this.oAuthProvider = oAuthProvider;
@@ -55,9 +59,14 @@ public class User {
     //구독 모델 변경을 위한 메서드
     public void standardToPremium(){
         this.state = State.PREMIUM;
+        this.toBeState = State.PREMIUM;
     }
     public void premiumToStandard(){
+        this.toBeState = State.STANDARD;
+    }
+    public void premiumExpired(){
         this.state = State.STANDARD;
+        this.expirationDate = null;
     }
     public void initializeExpirationDate(){
         this.expirationDate = null;

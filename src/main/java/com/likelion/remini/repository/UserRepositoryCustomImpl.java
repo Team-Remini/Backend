@@ -1,6 +1,7 @@
 package com.likelion.remini.repository;
 
 import com.likelion.remini.domain.QUser;
+import com.likelion.remini.domain.State;
 import com.likelion.remini.domain.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
     }
 
     @Override
-    public List<User> findUserListAfterExpiration(LocalDateTime currentTime){
+    public List<User> findUserListAfterExpirationAndToBeStateStandard(LocalDateTime currentTime){
         QUser qUser = QUser.user;
 
         return queryFactory
                 .select(qUser)
                 .from(qUser)
-                .where(qUser.expirationDate.loe(currentTime))
+                .where(qUser.expirationDate.loe(currentTime).and(qUser.toBeState.eq(State.STANDARD)))
                 .fetch();
     }
 
