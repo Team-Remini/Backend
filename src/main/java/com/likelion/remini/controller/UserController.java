@@ -51,4 +51,16 @@ public class UserController {
         userService.automaticUpdatePremiumUserState();
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    //premium 구독 모델 자동 갱신 api
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "탈퇴하기")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "탈퇴하기 성공"),
+            @ApiResponse(code = 500, message = "서버 내 오류")
+    })
+    public ResponseEntity<Long> deleteUser(){
+        userService.deleteUser();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

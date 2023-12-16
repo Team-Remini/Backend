@@ -87,6 +87,15 @@ public class UserService {
         }
     }
 
+    /**
+     * 탈퇴하기 기능
+     *
+     */
+    @Transactional
+    public void deleteUser(){
+        User user = getUser();
+        userRepository.delete(user);
+    }
 
 
     private User getUser() {
