@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/remini")
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class ReminiController {
             @ApiResponse(code = 201, message = "회고 생성 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    public ResponseEntity<ReminiResponse> createRemini(@RequestBody ReminiRequestDTO reminiRequestDTO){
+    public ResponseEntity<ReminiResponse> createRemini(@RequestBody @Valid ReminiRequestDTO reminiRequestDTO){
 
         ReminiResponse reminiId = reminiService.createRemini(reminiRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(reminiId);
@@ -47,7 +49,8 @@ public class ReminiController {
             @ApiResponse(code = 200, message = "회고 수정 성공"),
             @ApiResponse(code = 500, message = "서버 내 오류")
     })
-    public ResponseEntity<ReminiResponse> updateRemini(@PathVariable Long reminiId, @RequestBody ReminiUpdateRequestDTO reminiUpdateRequestDTO) {
+    public ResponseEntity<ReminiResponse> updateRemini(@PathVariable Long reminiId,
+                                                       @RequestBody @Valid ReminiUpdateRequestDTO reminiUpdateRequestDTO) {
 
         ReminiResponse updatedReminiId = reminiService.updateRemini(reminiId, reminiUpdateRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updatedReminiId);
