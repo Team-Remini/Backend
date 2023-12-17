@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,9 +62,9 @@ public class ReminiDetailResponse {
     @ApiModelProperty(value = "요청자와 소유자 일치 여부", example = "true")
     private final boolean isOwner;
 
-    @ApiModelProperty(value = "생성일자", example = "2023-11-17T01:41:45.123456")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime createdDate;
+    @ApiModelProperty(value = "생성일자", example = "2023.11.17")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    private final LocalDate createdDate;
 
     public static ReminiDetailResponse create(Remini remini, User requestor, String reminiImage, boolean isLiked) {
 
@@ -85,7 +85,7 @@ public class ReminiDetailResponse {
                 .likesCount(remini.getLikesCount())
                 .isLiked(isLiked)
                 .isOwner(owner.getId().equals(requestor.getId()))
-                .createdDate(remini.getCreatedDate())
+                .createdDate(remini.getCreatedDate().toLocalDate())
                 .build();
     }
 }
