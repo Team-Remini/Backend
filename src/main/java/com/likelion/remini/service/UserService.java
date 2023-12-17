@@ -34,8 +34,10 @@ public class UserService {
         UserResponseDTO userResponseDTO = UserResponseDTO.builder()
                 .nickName(user.getNickname())
                 .state(user.getState())
+                .toBeState(user.getToBeState())
                 .expirationDate(user.getExpirationDate())
                 .profileImageUrl(user.getProfileImageURL())
+                .alarmTime(user.getAlarmTime())
                 .build();
         return userResponseDTO;
     }
@@ -68,22 +70,32 @@ public class UserService {
         }
 
     }
+
     /**
-     * 프리미엄 사용자의 구독 유형을 자동 갱신하는 메서드이다.
-     *
+     * 프리미엄 사용자의 구독자 중 toBeState가 stadard인 사용자
+     * 유형을 만료일자 넘길 시 자동 갱신하는 메서드이다.
      *
      */
-//    @Transactional
-//    @Scheduled(cron = "0 0 9 * * *") // 매일 9시마다 실행
-//    public void automaticUpdatePremiumUserState(){
-//        LocalDateTime currentTime = LocalDateTime.now();
-//        List<User> userList = userRepository.findUserListAfterExpiration(currentTime);
-//        for(User userToUpdate : userList){
-//            userToUpdate.setExpirationDate();
-//            userRepository.save(userToUpdate);
-//        }
-//    }
+    @Transactional
+    @Scheduled(cron = "0 0 9 * * *") // 매일 9시마다 실행
+    public void automaticUpdatePremiumUserState(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<User> userList = userRepository.findUserListAfterExpirationAndToBeStateStandard(currentTime);
+        for(User userToUpdate : userList){
+            userToUpdate.premiumExpired();
+            userRepository.save(userToUpdate);
+        }
+    }
 
+    /**
+     * 탈퇴하기 기능
+     *
+     */
+    @Transactional
+    public void deleteUser(){
+        User user = getUser();
+        userRepository.delete(user);
+    }
 
 
     private User getUser() {

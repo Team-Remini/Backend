@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface UserRepositoryCustom {
     List<User> findUserListAfterAlarm(LocalDateTime currentTime);
-    List<User> findUserListAfterExpiration(LocalDateTime currentTime);
+    List<User> findUserListAfterExpirationAndToBeStateStandard(LocalDateTime currentTime);
 }
