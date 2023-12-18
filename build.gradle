@@ -57,6 +57,9 @@ dependencies {
 
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// jsoup Java HTML Parser
+	implementation 'org.jsoup:jsoup:1.15.3'
 }
 
 tasks.named('test') {
