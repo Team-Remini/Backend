@@ -36,6 +36,7 @@ public class OAuthLoginService {
                 .profileImageURL((oAuthInfoResponse.getProfileImageURL()))
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
                 .state(State.STANDARD)
+                .toBeState(State.STANDARD)
                 .build();
 
         return userRepository.save(user).getId();
