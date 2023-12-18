@@ -1,15 +1,15 @@
 package com.likelion.remini.service;
 
-import com.likelion.remini.domain.*;
+import com.likelion.remini.domain.Remini;
+import com.likelion.remini.domain.State;
+import com.likelion.remini.domain.Type;
+import com.likelion.remini.domain.User;
 import com.likelion.remini.exception.ReminiErrorResult;
 import com.likelion.remini.exception.ReminiException;
-import com.likelion.remini.exception.UserErrorResult;
-import com.likelion.remini.exception.UserException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.ReminiRepository;
 import com.likelion.remini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -72,7 +72,7 @@ public class AlarmService {
         LocalDateTime currentTime = LocalDateTime.now();
         List<User> userList = userRepository.findUserListAfterAlarm(currentTime);
         for(User user : userList){
-            String subject = "설정 된 알림 발송";
+            String subject = "[Remini 회고 알림] 이전에 작성한 회고를 돌아보세요!";
             Remini remini = reminiRepository.findFirstByUserOrderByModifiedDateDesc(user)
                     .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
             sendAlarm_remini_alarm(user, subject, remini.getTitle(), remini.getType(), remini.getModifiedDate(), remini.getReminiId());
@@ -96,7 +96,7 @@ public class AlarmService {
 
         List<User> userList = userRepository.findByExpirationDateBetween(start, end);
         for(User user : userList){
-            String subject = "3일 뒤에 구독 갱신됩니다";
+            String subject = "[Remini 구독 결제 예정] Premium 구독 모델 결제 예정 안내";
             sendAlarm_payment_plan(user, subject, user.getState(), user.getExpirationDate(), "9900");
             userRepository.save(user);
         }
@@ -117,7 +117,7 @@ public class AlarmService {
 
         List<User> userList = userRepository.findByExpirationDateBetween(start, end);
         for(User user : userList){
-            String subject = "구독이 갱신되었습니다";
+            String subject = "[Remini 구독 결제 내역] Premium 구독 모델 결제 내역 안내";
             sendAlarm_payment_history(user, subject, user.getState(), user.getExpirationDate(), user.getExpirationDate(), "9900",user.getExpirationDate().plusMonths(1L));
             user.setExpirationDate();
             userRepository.save(user);
