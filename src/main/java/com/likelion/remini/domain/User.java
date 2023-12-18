@@ -64,6 +64,9 @@ public class User {
     public void premiumToStandard(){
         this.toBeState = State.STANDARD;
     }
+    public void toBeStateStandardToPremium(){
+        this.toBeState = State.PREMIUM;
+    }
     public void premiumExpired(){
         this.state = State.STANDARD;
         this.expirationDate = null;
