@@ -50,10 +50,14 @@ public class UserService {
     @Transactional
     public void updateUserState(State newState){
         User userToUpdate = getUser();
+        //state가 premium(toBeState = standard) -> premium(toBeState= premium) 해지 취소
         //state가 standard -> premium : state 변경, 현재 시각 기준 + 1달이 expiration date로 설정
         //state가 premium -> standard : state 변경, expiration date null 설정
         //state가 premium -> premium(갱신) : 현재 시각 기준 + 1달이 expiration date로 설정
-        if (userToUpdate.getState().equals(newState) && newState.equals(State.PREMIUM)){
+        if (userToUpdate.getState().equals(newState) && userToUpdate.getToBeState().equals(State.STANDARD) && newState.equals(State.PREMIUM)){
+            userToUpdate.toBeStateStandardToPremium();
+            userRepository.save(userToUpdate);
+        } else if (userToUpdate.getState().equals(newState) && newState.equals(State.PREMIUM)){
             //state가 premium -> premium(갱신)
             userToUpdate.setExpirationDate();
             userRepository.save(userToUpdate);
