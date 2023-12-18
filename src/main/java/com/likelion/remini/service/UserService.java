@@ -69,7 +69,6 @@ public class UserService {
         }else if(!userToUpdate.getState().equals(newState) && newState.equals(State.STANDARD)){
             //state가 premium -> standard
             userToUpdate.premiumToStandard();
-            userToUpdate.initializeExpirationDate();
             userRepository.save(userToUpdate);
         }
 
