@@ -4,8 +4,6 @@ import com.likelion.remini.domain.Remini;
 import com.likelion.remini.domain.State;
 import com.likelion.remini.domain.Type;
 import com.likelion.remini.domain.User;
-import com.likelion.remini.exception.ReminiErrorResult;
-import com.likelion.remini.exception.ReminiException;
 import com.likelion.remini.jwt.AuthTokensGenerator;
 import com.likelion.remini.repository.ReminiRepository;
 import com.likelion.remini.repository.UserRepository;
@@ -25,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,8 +72,14 @@ public class AlarmService {
         List<User> userList = userRepository.findUserListAfterAlarm(currentTime);
         for(User user : userList){
             String subject = "[Remini 회고 알림] 이전에 작성한 회고를 돌아보세요!";
-            Remini remini = reminiRepository.findFirstByUserOrderByModifiedDateDesc(user)
-                    .orElseThrow(() -> new ReminiException(ReminiErrorResult.REMINI_NOT_FOUND));
+            Optional<Remini> optionalRemini = reminiRepository.findFirstByUserOrderByModifiedDateDesc(user);
+
+            if (optionalRemini.isEmpty()) {
+                user.setAlarmTime(null);
+                continue;
+            }
+
+            Remini remini = optionalRemini.get();
             sendAlarm_remini_alarm(user, subject, remini.getTitle(), remini.getType(), remini.getModifiedDate(), remini.getReminiId());
             user.setAlarmTime(null);
             userRepository.save(user);
